@@ -44,6 +44,12 @@
     <h1>David Peach</h1>
     <p>a personal digital reboot</p>
     <section>
+        <h2>About me</h2>
+        <p>I am a <a href="https://www.php.net/">PHP</a> developer with about nine years experience. I have briefly looked into some other languages but keep coming back to PHP.</p>
+        <p><a href="https://laravel.com">Laravel</a> is my PHP framework of choice and I still enjoy digging into core PHP.</p>
+        <p>I have no real desire to become a "full-stack developer", although I don't mind <em>some</em> basic - intermediate <a href="https://en.wikipedia.org/wiki/JavaScript">JavaScript</a>. With <a href="https://vuejs.org/">VueJS</a> preferably.</p>
+    </section>
+    <section>
         <h2>Open-source Projects</h2>
         <ul>
             <li>
