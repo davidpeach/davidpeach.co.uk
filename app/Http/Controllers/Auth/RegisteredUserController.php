@@ -15,7 +15,7 @@ class RegisteredUserController extends Controller
 {
     public function __construct()
     {
-        abort(403);
+        abort(404);
     }
 
     /**

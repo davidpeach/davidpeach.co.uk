@@ -42,6 +42,21 @@ class PostsTest extends TestCase
     }
 
     /** @test */
+    public function guests_can_view_a_single_post()
+    {
+        $this->withoutExceptionHandling();
+        $post = Post::factory()->create([
+            'title' => 'The post title',
+            'body' => 'This is the post content',
+        ]);
+
+        $response = $this->get(route('post.show', ['post' => $post]));
+        $response->assertStatus(200);
+        $response->assertSee('The post title')
+                ->assertSee('This is the post content');
+    }
+
+    /** @test */
     public function i_can_visit_the_post_create_page()
     {
         $this->login();
