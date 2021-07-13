@@ -40,4 +40,38 @@ class PostsTest extends TestCase
                 ->assertSee('Post C Title')
                 ->assertSee('This is the post C content');
     }
+
+    /** @test */
+    public function i_can_visit_the_post_create_page()
+    {
+        $this->login();
+
+        $response = $this->get('/posts/create');
+
+        $response->assertStatus(200);
+    }
+
+    /** @test */
+    public function guests_cannot_visit_the_post_create_page()
+    {
+        $response = $this->get('/posts/create');
+
+        $response->assertStatus(302);
+    }
+
+    /** @test */
+    public function i_can_create_posts_when_authenticated()
+    {
+        $this->login();
+
+        $this->post('/posts', [
+            'title' => 'My created post',
+            'body' => 'welcome to my post content',
+        ]);
+
+        $this->assertDatabaseHas('posts', [
+            'title' => 'My created post',
+            'body' => 'welcome to my post content',
+        ]);
+    }
 }
