@@ -13,6 +13,11 @@ use Illuminate\Validation\Rules;
 
 class RegisteredUserController extends Controller
 {
+    public function __construct()
+    {
+        abort(403);
+    }
+
     /**
      * Display the registration view.
      *
