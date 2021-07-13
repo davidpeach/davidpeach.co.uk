@@ -64,7 +64,7 @@ class PostsTest extends TestCase
     {
         $this->login();
 
-        $this->post('/posts', [
+        $this->post(route('post.store'), [
             'title' => 'My created post',
             'body' => 'welcome to my post content',
         ]);

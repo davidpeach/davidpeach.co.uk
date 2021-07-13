@@ -20,7 +20,7 @@ Route::get('/', function () {
 
 Route::get('posts', [PostController::class, 'index']);
 Route::get('posts/create', [PostController::class, 'create'])->middleware('auth');
-Route::post('posts', [PostController::class, 'store'])->middleware('auth');
+Route::post('posts', [PostController::class, 'store'])->middleware('auth')->name('post.store');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
