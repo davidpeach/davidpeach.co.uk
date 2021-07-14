@@ -80,7 +80,7 @@ class PostsTest extends TestCase
         $this->w();
         $this->login();
 
-        $this->post(route('post.store'), [
+        $response = $this->post(route('post.store'), [
             'title' => 'My created post',
             'body_raw' => "## welcome to my post content\nthis is the content\n\nthis is more content",
         ]);
@@ -90,5 +90,7 @@ class PostsTest extends TestCase
             'body_raw' => "## welcome to my post content\nthis is the content\n\nthis is more content",
             'body_html' => "<h2>welcome to my post content</h2>\n<p>this is the content</p>\n<p>this is more content</p>\n",
         ]);
+
+        $response->assertRedirect(route('post.show', 1));
     }
 }

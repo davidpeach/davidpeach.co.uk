@@ -28,9 +28,11 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
-        Post::create([
+        $post = Post::create([
             'title' => $request->title,
             'body_raw' => $request->body_raw,
         ]);
+
+        return redirect()->route('post.show', ['post' => $post]);
     }
 }
