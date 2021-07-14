@@ -12,6 +12,6 @@ class HomeTest extends TestCase
         $response = $this->get('/');
         $response->assertStatus(200);
         $response->assertSee('David Peach');
-        $response->assertSee('love a good story');
+        $response->assertSee('a personal digital reboot');
     }
 }
