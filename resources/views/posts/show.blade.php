@@ -3,6 +3,6 @@
 @section('main')
 <h2>{{ $post->title }}</h2>
 <div>
-    {{ $post->body }}
+    {!! $post->body_html !!}
 </div>
 @endsection

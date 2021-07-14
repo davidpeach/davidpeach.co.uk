@@ -7,7 +7,7 @@
                 <a href="{{ route('post.show', ['post' => $post]) }}">{{ $post->title }}</a>
             </h2>
             <div>
-                {{ $post->body }}
+                {!! $post->body_html !!}
             </div>
         </article>
     @endforeach

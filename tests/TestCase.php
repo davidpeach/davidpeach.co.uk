@@ -9,6 +9,11 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
+    public function w($exceptions = [])
+    {
+        $this->withoutExceptionHandling($exceptions);
+    }
+
     public function login()
     {
         $user = User::factory()->create();
