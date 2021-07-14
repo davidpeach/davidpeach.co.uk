@@ -25,10 +25,13 @@
         section {
             margin-top: 3em;
         }
-        h1 {
-            margin-bottom: 0;
+        .title {
+            display: block;
+            font-size: 2em;
+            font-weight: bold;
+            margin: .67em 0 0;
         }
-        h1 + p {
+        .title + p {
             font-size: 1.3em;
             margin-top: .25em;
             margin-bottom: 2em;
@@ -41,7 +44,11 @@
     </style>
 </head>
 <body>
-    <h1>David Peach</h1>
+    @if(request()->routeIs('home'))
+    <h1 class="title">David Peach</h1>
+    @else
+    <span class="title">David Peach</span>
+    @endif
     <p>a personal digital reboot</p>
     @yield('main')
 </body>
