@@ -44,7 +44,6 @@ class PostsTest extends TestCase
     /** @test */
     public function guests_can_view_a_single_post()
     {
-        $this->withoutExceptionHandling();
         $post = Post::factory()->create([
             'title' => 'The post title',
             'body_html' => 'This is the post content',
@@ -126,5 +125,54 @@ class PostsTest extends TestCase
         $response = $this->get(route('dashboard.post.index'));
 
         $response->assertStatus(302);
+    }
+
+    /** @test */
+    public function i_can_visit_the_post_edit_page_and_see_current_post_values()
+    {
+        $this->login();
+        $this->w();
+        $post = Post::factory()->create([
+            'title' => 'Post title',
+            'body_raw' => 'The post content',
+            'body_html' => '<p>The post content</p>',
+        ]);
+
+        $response = $this->get(route('dashboard.post.edit', ['post' => $post]));
+
+        $response->assertStatus(200);
+
+        $response->assertSee('Post title')
+            ->assertSee('The post content');
+    }
+
+    /** @test */
+    public function i_can_update_existing_posts()
+    {
+        $this->login();
+
+        $post = Post::factory()->create([
+            'title' => 'Old post title',
+            'body_raw' => 'Old post content',
+            'body_html' => '<p>Old post content</p>',
+        ]);
+
+        $response = $this->put(route('post.update', ['post' => $post]), [
+            'title' => 'Updated title',
+            'body_raw' => 'updated post content',
+        ]);
+
+        $response->assertRedirect(route('dashboard.post.index'));
+
+        $this->assertDatabaseHas('posts', [
+            'title' => 'Updated title',
+            'body_raw' => 'updated post content',
+            'body_html' => "<p>updated post content</p>\n",
+        ]);
+        $this->assertDatabaseMissing('posts', [
+            'title' => 'Old post title',
+            'body_raw' => 'Old post content',
+            'body_html' => "<p>Old post content</p>\n",
+        ]);
     }
 }
