@@ -61,7 +61,7 @@ class PostsTest extends TestCase
     {
         $this->login();
 
-        $response = $this->get('/posts/create');
+        $response = $this->get(route('post.create'));
 
         $response->assertStatus(200);
     }
@@ -69,7 +69,7 @@ class PostsTest extends TestCase
     /** @test */
     public function guests_cannot_visit_the_post_create_page()
     {
-        $response = $this->get('/posts/create');
+        $response = $this->get(route('post.create'));
 
         $response->assertStatus(302);
     }
@@ -82,7 +82,6 @@ class PostsTest extends TestCase
 
         $this->post(route('post.store'), [
             'title' => 'My created post',
-            'body' => 'body',
             'body_raw' => "## welcome to my post content\nthis is the content\n\nthis is more content",
         ]);
 

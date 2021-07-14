@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,6 +15,10 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(PostSeeder::class);
-        // \App\Models\User::factory(10)->create();
+        User::factory()->create([
+            'name' => env('MY_NAME'),
+            'email' => env('MY_EMAIL'),
+            'password' => bcrypt(env('MY_PASSWORD')),
+        ]);
     }
 }

@@ -30,7 +30,6 @@ class PostController extends Controller
     {
         Post::create([
             'title' => $request->title,
-            'body' => $request->body,
             'body_raw' => $request->body_raw,
         ]);
     }
