@@ -15,7 +15,6 @@ class PostsTest extends TestCase
     /** @test */
     public function guests_can_view_an_archive_of_posts_in_reverse_published_at_order()
     {
-        $this->w();
         Post::factory()->count(3)
                 ->state(new Sequence(
                     [
@@ -68,9 +67,10 @@ class PostsTest extends TestCase
     /** @test */
     public function i_can_visit_the_post_create_page()
     {
+        $this->w();
         $this->login();
 
-        $response = $this->get(route('post.create'));
+        $response = $this->get(route('dashboard.post.create'));
 
         $response->assertStatus(200);
     }
@@ -78,7 +78,7 @@ class PostsTest extends TestCase
     /** @test */
     public function guests_cannot_visit_the_post_create_page()
     {
-        $response = $this->get(route('post.create'));
+        $response = $this->get(route('dashboard.post.create'));
 
         $response->assertStatus(302);
     }
@@ -89,7 +89,7 @@ class PostsTest extends TestCase
         $this->w();
         $this->login();
 
-        $response = $this->post(route('post.store'), [
+        $response = $this->post(route('dashboard.post.store'), [
             'title' => 'My created post',
             'body_raw' => "## welcome to my post content\nthis is the content\n\nthis is more content",
         ]);
@@ -167,7 +167,7 @@ class PostsTest extends TestCase
             'body_html' => '<p>Old post content</p>',
         ]);
 
-        $response = $this->put(route('post.update', ['post' => $post]), [
+        $response = $this->put(route('dashboard.post.update', ['post' => $post]), [
             'title' => 'Updated title',
             'body_raw' => 'updated post content',
         ]);

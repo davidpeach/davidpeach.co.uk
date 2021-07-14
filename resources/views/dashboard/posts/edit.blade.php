@@ -10,7 +10,7 @@
         <div class="mx-auto sm:px-6 lg:px-8 flex">
             <div class="w-1/2 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200 text-xl">
-                    <form action="{{ route('post.update', ['post' => $post]) }}" method="POST">
+                    <form action="{{ route('dashboard.post.update', ['post' => $post]) }}" method="POST">
                         {!! csrf_field() !!}
                         {!! method_field('put') !!}
                         <label

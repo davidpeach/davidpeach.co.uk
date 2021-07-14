@@ -31,4 +31,19 @@ class PostController extends Controller
             'post' => $post,
         ]);
     }
+
+    public function create()
+    {
+        return view('dashboard.posts.create');
+    }
+
+    public function store(Request $request)
+    {
+        $post = Post::create([
+            'title' => $request->title,
+            'body_raw' => $request->body_raw,
+        ]);
+
+        return redirect()->route('post.show', ['post' => $post]);
+    }
 }
