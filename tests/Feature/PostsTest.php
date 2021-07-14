@@ -93,4 +93,38 @@ class PostsTest extends TestCase
 
         $response->assertRedirect(route('post.show', 1));
     }
+
+    /** @test */
+    public function i_can_view_all_posts_in_the_dashboard()
+    {
+        $this->login();
+
+        Post::factory()->count(3)
+                ->state(new Sequence(
+                    [
+                        'title' => 'Post A Title',
+                    ],
+                    [
+                        'title' => 'Post B Title',
+                    ],
+                    [
+                        'title' => 'Post C Title',
+                    ],
+                ))
+                ->create();
+
+        $response = $this->get(route('dashboard.post.index'));
+
+        $response->assertSee('Post A Title')
+                ->assertSee('Post B Title')
+                ->assertSee('Post C Title');
+    }
+
+    /** @test */
+    public function guests_can_not_view_posts_in_the_dashboard()
+    {
+        $response = $this->get(route('dashboard.post.index'));
+
+        $response->assertStatus(302);
+    }
 }
