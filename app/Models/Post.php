@@ -17,6 +17,10 @@ class Post extends Model
         'body_html',
     ];
 
+    public $dates = [
+        'published_at',
+    ];
+
     public function setBodyRawAttribute($bodyRaw)
     {
         $this->attributes['body_raw'] = $bodyRaw;

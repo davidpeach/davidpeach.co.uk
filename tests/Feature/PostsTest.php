@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Post;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -12,33 +13,42 @@ class PostsTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function guests_can_view_an_archive_of_posts()
+    public function guests_can_view_an_archive_of_posts_in_reverse_published_at_order()
     {
+        $this->w();
         Post::factory()->count(3)
                 ->state(new Sequence(
                     [
                         'title' => 'Post A Title',
                         'body_html' => '<p>This is the post A content</p>',
+                        'published_at' => new Carbon('1st January 2025'),
                     ],
                     [
                         'title' => 'Post B Title',
                         'body_html' => '<p>This is the post B content</p>',
+                        'published_at' => new Carbon('1st December 2025'),
                     ],
                     [
                         'title' => 'Post C Title',
                         'body_html' => '<p>This is the post C content</p>',
+                        'published_at' => new Carbon('1st July 2025'),
                     ],
                 ))
                 ->create();
 
         $response = $this->get('/posts');
 
-        $response->assertSee('Post A Title')
-                ->assertSee('This is the post A content')
-                ->assertSee('Post B Title')
-                ->assertSee('This is the post B content')
-                ->assertSee('Post C Title')
-                ->assertSee('This is the post C content');
+        $response->assertSeeTextInOrder([
+            'Post B Title',
+            'published on 1st December, 2025',
+            'This is the post B content',
+            'Post C Title',
+            'published on 1st July, 2025',
+            'This is the post C content',
+            'Post A Title',
+            'published on 1st January, 2025',
+            'This is the post A content',
+        ]);
     }
 
     /** @test */
