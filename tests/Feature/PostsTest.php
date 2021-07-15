@@ -53,7 +53,6 @@ class PostsTest extends TestCase
     /** @test */
     public function guests_can_view_a_single_post()
     {
-        $this->w();
         $post = Post::factory()->create([
             'title' => 'The post title',
             'body_html' => 'This is the post content',
@@ -86,7 +85,6 @@ class PostsTest extends TestCase
     /** @test */
     public function i_can_publish_posts_when_authenticated()
     {
-        $this->w();
         $this->login();
 
         $response = $this->post(route('dashboard.post.store'), [
@@ -120,6 +118,21 @@ class PostsTest extends TestCase
 
         $response = $this->get(route('post.index'));
         $response->assertDontSee('My created post');
+    }
+
+    /** @test */
+    public function live_posts_with_future_date_will_not_be_displayed()
+    {
+        $post = Post::factory()->create([
+            'title' => 'Post title',
+            'body_raw' => 'The post content',
+            'body_html' => '<p>The post content</p>',
+            'status' => 'live',
+            'published_at' => now()->addDays(5),
+        ]);
+
+        $this->get(route('post.index'))->assertDontSee('Post title');
+        $this->get(route('post.show', ['post' => $post->slug]))->assertDontSee('Post title')->assertStatus(404);
     }
 
     /** @test */
@@ -185,7 +198,6 @@ class PostsTest extends TestCase
     /** @test */
     public function i_can_visit_the_post_edit_page_and_see_current_post_values()
     {
-        $this->w();
         $this->login();
 
         $post = Post::factory()->create([
