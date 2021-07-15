@@ -257,4 +257,18 @@ class PostsTest extends TestCase
         $this->get(route('post.index'))->assertDontSee($post->title);
         $this->get(route('post.show', ['post' => $post]))->assertStatus(404);
     }
+
+    /** @test */
+    public function generated_post_slugs_will_not_exceed_eight_words()
+    {
+        $title = 'This is a title that has more than eight words';
+        $date = new Carbon('25th December 1995');
+
+        $slug = makePostSlug($date, $title);
+
+        $this->assertSame(
+            $slug,
+            '1995/12/25/this-is-a-title-that-has-more-than'
+        );
+    }
 }
