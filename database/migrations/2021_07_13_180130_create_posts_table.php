@@ -23,6 +23,7 @@ class CreatePostsTable extends Migration
             $table->enum('status', ['draft', 'live', 'scheduled']);
             $table->timestamp('published_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

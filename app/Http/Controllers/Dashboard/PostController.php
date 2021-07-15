@@ -64,4 +64,11 @@ class PostController extends Controller
 
         return redirect()->route('post.show', ['post' => $post->slug]);
     }
+
+    public function destroy(Post $post)
+    {
+        $post->delete();
+
+        return redirect()->route('dashboard.post.index');
+    }
 }

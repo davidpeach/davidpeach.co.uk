@@ -20,17 +20,17 @@ class PostsTest extends TestCase
                     [
                         'title' => 'Post A Title',
                         'body_html' => '<p>This is the post A content</p>',
-                        'published_at' => new Carbon('1st January 2025'),
+                        'published_at' => new Carbon('1st January 2020'),
                     ],
                     [
                         'title' => 'Post B Title',
                         'body_html' => '<p>This is the post B content</p>',
-                        'published_at' => new Carbon('1st December 2025'),
+                        'published_at' => new Carbon('1st December 2020'),
                     ],
                     [
                         'title' => 'Post C Title',
                         'body_html' => '<p>This is the post C content</p>',
-                        'published_at' => new Carbon('1st July 2025'),
+                        'published_at' => new Carbon('1st July 2020'),
                     ],
                 ))
                 ->create();
@@ -39,13 +39,13 @@ class PostsTest extends TestCase
 
         $response->assertSeeTextInOrder([
             'Post B Title',
-            'published on 1st December, 2025',
+            'published on 1st December, 2020',
             'This is the post B content',
             'Post C Title',
-            'published on 1st July, 2025',
+            'published on 1st July, 2020',
             'This is the post C content',
             'Post A Title',
-            'published on 1st January, 2025',
+            'published on 1st January, 2020',
             'This is the post A content',
         ]);
     }
@@ -311,5 +311,20 @@ class PostsTest extends TestCase
             $slug,
             '1995/12/25/this-is-a-title-that-has-more-than'
         );
+    }
+
+    /** @test */
+    public function i_can_soft_delete_posts()
+    {
+        $this->login();
+        $post = Post::factory(Post::class)->create();
+
+        $response = $this->delete(route('dashboard.post.delete', [
+            'post' => $post->id,
+        ]));
+
+        $response->assertRedirect(route('dashboard.post.index'));
+
+        $this->assertSoftDeleted($post);
     }
 }

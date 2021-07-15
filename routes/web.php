@@ -21,6 +21,7 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::get('posts/{post}/edit', [DashboardPostController::class, 'edit'])->name('dashboard.post.edit');
     Route::post('posts', [DashboardPostController::class, 'store'])->name('dashboard.post.store');
     Route::put('posts/{post}', [DashboardPostController::class, 'update'])->name('dashboard.post.update');
+    Route::delete('posts/{post}', [DashboardPostController::class, 'destroy'])->name('dashboard.post.delete');
 });
 
 require __DIR__ . '/auth.php';

@@ -56,6 +56,16 @@
                         </select>
 
                         <button type="submit">Update</button>
+
+                    </form>
+                    <form
+                        method="POST"
+                        action="{{ route('dashboard.post.delete', ['post' => $post]) }}"
+                        onClick="return confirm('Delete?');"
+                    >
+                        {{ csrf_field() }}
+                        {{ method_field('delete') }}
+                        <button type="submit">delete</button>
                     </form>
                 </div>
             </div>
