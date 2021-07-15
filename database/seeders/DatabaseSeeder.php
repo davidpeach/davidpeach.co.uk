@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(PostSeeder::class);
+        $this->call(PostSeeder::class);
         User::factory()->create([
             'name' => env('MY_NAME'),
             'email' => env('MY_EMAIL'),

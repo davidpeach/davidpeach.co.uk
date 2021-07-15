@@ -34,6 +34,16 @@
                             class="block w-full mb-5 text-xl"
                         ></textarea>
 
+                        <label for="status" class="block">Status</label>
+                        <select
+                            name="status"
+                            id="status"
+                            class="block"
+                        >
+                            <option value="draft">Draft</option>
+                            <option value="live">Live</option>
+                        </select>
+
                         <button type="submit">Post</button>
                     </form>
                 </div>

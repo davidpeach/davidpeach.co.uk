@@ -36,7 +36,17 @@
                             class="block w-full mb-5 text-xl"
                         >{{ $post->body_raw }}</textarea>
 
-                        <button type="submit">Post</button>
+                        <label for="status" class="block">Status</label>
+                        <select
+                            name="status"
+                            id="status"
+                            class="block"
+                        >
+                            <option value="draft" {{ $post->status === 'draft' ? 'selected': '' }}>Draft</option>
+                            <option value="live" {{ $post->status === 'live' ? 'selected': '' }}>Live</option>
+                        </select>
+
+                        <button type="submit">Update</button>
                     </form>
                 </div>
             </div>
