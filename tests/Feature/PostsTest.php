@@ -67,7 +67,6 @@ class PostsTest extends TestCase
     /** @test */
     public function i_can_visit_the_post_create_page()
     {
-        $this->w();
         $this->login();
 
         $response = $this->get(route('dashboard.post.create'));
@@ -84,14 +83,14 @@ class PostsTest extends TestCase
     }
 
     /** @test */
-    public function i_can_create_posts_when_authenticated()
+    public function i_can_publish_posts_when_authenticated()
     {
-        $this->w();
         $this->login();
 
         $response = $this->post(route('dashboard.post.store'), [
             'title' => 'My created post',
             'body_raw' => "## welcome to my post content\nthis is the content\n\nthis is more content",
+            'status' => 'live',
         ]);
 
         $this->assertDatabaseHas('posts', [
@@ -101,6 +100,31 @@ class PostsTest extends TestCase
         ]);
 
         $response->assertRedirect(route('post.show', 1));
+    }
+
+    /** @test */
+    public function i_can_draft_posts_when_authenticated()
+    {
+        $this->login();
+
+        $response = $this->post(route('dashboard.post.store'), [
+            'title' => 'My created post',
+            'body_raw' => "## welcome to my post content\nthis is the content\n\nthis is more content",
+            'status' => 'draft',
+        ]);
+        $post = Post::first();
+
+        $response->assertRedirect(route('dashboard.post.edit', ['post' => $post]));
+
+        $this->assertDatabaseHas('posts', [
+            'title' => 'My created post',
+            'body_raw' => "## welcome to my post content\nthis is the content\n\nthis is more content",
+            'body_html' => "<h2>welcome to my post content</h2>\n<p>this is the content</p>\n<p>this is more content</p>\n",
+            'status' => 'draft',
+        ]);
+
+        $this->get(route('post.index'))->assertDontSee($post->title);
+        $this->get(route('post.show', ['post' => $post]))->assertStatus(404);
     }
 
     /** @test */
@@ -141,7 +165,7 @@ class PostsTest extends TestCase
     public function i_can_visit_the_post_edit_page_and_see_current_post_values()
     {
         $this->login();
-        $this->w();
+
         $post = Post::factory()->create([
             'title' => 'Post title',
             'body_raw' => 'The post content',
@@ -170,6 +194,7 @@ class PostsTest extends TestCase
         $response = $this->put(route('dashboard.post.update', ['post' => $post]), [
             'title' => 'Updated title',
             'body_raw' => 'updated post content',
+            'status' => 'live',
         ]);
 
         $response->assertRedirect(route('dashboard.post.index'));
@@ -184,5 +209,30 @@ class PostsTest extends TestCase
             'body_raw' => 'Old post content',
             'body_html' => "<p>Old post content</p>\n",
         ]);
+    }
+
+    /** @test */
+    public function i_can_mark_an_already_published_post_as_draft()
+    {
+        $this->login();
+
+        $post = Post::factory()->create([
+            'title' => 'Old post title',
+            'body_raw' => 'Old post content',
+            'body_html' => '<p>Old post content</p>',
+            'status' => 'live',
+        ]);
+
+        $this->get(route('post.index'))->assertSee($post->title);
+
+        $this->put(route('dashboard.post.update', ['post' => $post]), [
+            'title' => 'Old post title',
+            'body_raw' => 'Old post content',
+            'body_html' => '<p>Old post content</p>',
+            'status' => 'draft',
+        ]);
+
+        $this->get(route('post.index'))->assertDontSee($post->title);
+        $this->get(route('post.show', ['post' => $post]))->assertStatus(404);
     }
 }

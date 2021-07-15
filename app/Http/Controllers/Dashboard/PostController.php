@@ -20,6 +20,7 @@ class PostController extends Controller
         $post->update([
             'title' => $request->title,
             'body_raw' => $request->body_raw,
+            'status' => $request->status,
         ]);
 
         return redirect()->route('dashboard.post.index');
@@ -42,7 +43,12 @@ class PostController extends Controller
         $post = Post::create([
             'title' => $request->title,
             'body_raw' => $request->body_raw,
+            'status' => $request->status,
         ]);
+
+        if ($post->status === 'draft') {
+            return redirect()->route('dashboard.post.edit', ['post' => $post]);
+        }
 
         return redirect()->route('post.show', ['post' => $post]);
     }

@@ -12,9 +12,9 @@ class Post extends Model
 
     protected $fillable = [
         'title',
-        'body',
         'body_raw',
         'body_html',
+        'status',
     ];
 
     public $dates = [

@@ -24,6 +24,7 @@ class PostFactory extends Factory
         return [
             'title' => $this->faker->sentence,
             'body_raw' => $this->faker->paragraph,
+            'status' => 'live',
         ];
     }
 }
