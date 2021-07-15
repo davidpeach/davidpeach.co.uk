@@ -53,12 +53,13 @@ class PostsTest extends TestCase
     /** @test */
     public function guests_can_view_a_single_post()
     {
+        $this->w();
         $post = Post::factory()->create([
             'title' => 'The post title',
             'body_html' => 'This is the post content',
         ]);
 
-        $response = $this->get(route('post.show', ['post' => $post]));
+        $response = $this->get(route('post.show', ['post' => $post->slug]));
         $response->assertStatus(200);
         $response->assertSee('The post title')
                 ->assertSee('This is the post content');
@@ -85,21 +86,40 @@ class PostsTest extends TestCase
     /** @test */
     public function i_can_publish_posts_when_authenticated()
     {
+        $this->w();
         $this->login();
 
         $response = $this->post(route('dashboard.post.store'), [
             'title' => 'My created post',
             'body_raw' => "## welcome to my post content\nthis is the content\n\nthis is more content",
             'status' => 'live',
+            'published_at' => new Carbon('25th December 1995'),
         ]);
 
         $this->assertDatabaseHas('posts', [
             'title' => 'My created post',
             'body_raw' => "## welcome to my post content\nthis is the content\n\nthis is more content",
             'body_html' => "<h2>welcome to my post content</h2>\n<p>this is the content</p>\n<p>this is more content</p>\n",
+            'slug' => '1995/12/25/my-created-post',
         ]);
 
         $response->assertRedirect(route('post.show', 1));
+    }
+
+    /** @test */
+    public function i_can_schedule_posts_when_authenticated()
+    {
+        $this->login();
+
+        $this->post(route('dashboard.post.store'), [
+            'title' => 'My created post',
+            'body_raw' => "## welcome to my post content\nthis is the content\n\nthis is more content",
+            'status' => 'scheduled',
+            'published_at' => now()->addDays(2),
+        ]);
+
+        $response = $this->get(route('post.index'));
+        $response->assertDontSee('My created post');
     }
 
     /** @test */
@@ -111,6 +131,7 @@ class PostsTest extends TestCase
             'title' => 'My created post',
             'body_raw' => "## welcome to my post content\nthis is the content\n\nthis is more content",
             'status' => 'draft',
+            'published_at' => now(),
         ]);
         $post = Post::first();
 
@@ -164,6 +185,7 @@ class PostsTest extends TestCase
     /** @test */
     public function i_can_visit_the_post_edit_page_and_see_current_post_values()
     {
+        $this->w();
         $this->login();
 
         $post = Post::factory()->create([
@@ -172,7 +194,7 @@ class PostsTest extends TestCase
             'body_html' => '<p>The post content</p>',
         ]);
 
-        $response = $this->get(route('dashboard.post.edit', ['post' => $post]));
+        $response = $this->get(route('dashboard.post.edit', ['post' => $post->id]));
 
         $response->assertStatus(200);
 

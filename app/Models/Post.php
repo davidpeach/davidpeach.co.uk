@@ -15,6 +15,7 @@ class Post extends Model
         'body_raw',
         'body_html',
         'status',
+        'slug',
     ];
 
     public $dates = [

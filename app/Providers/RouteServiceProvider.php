@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Post;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -36,6 +37,14 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->configureRateLimiting();
+
+        Route::bind('post', function ($value) {
+            if (request()->routeIs('dashboard.*')) {
+                return Post::where('id', $value)->firstOrFail();
+            }
+
+            return Post::where('slug', $value)->firstOrFail();
+        });
 
         $this->routes(function () {
             Route::prefix('api')

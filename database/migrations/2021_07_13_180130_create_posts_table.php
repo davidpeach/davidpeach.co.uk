@@ -19,7 +19,8 @@ class CreatePostsTable extends Migration
             $table->string('title');
             $table->text('body_raw');
             $table->text('body_html')->nullable();
-            $table->enum('status', ['draft', 'live']);
+            $table->string('slug');
+            $table->enum('status', ['draft', 'live', 'scheduled']);
             $table->timestamp('published_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamps();
         });

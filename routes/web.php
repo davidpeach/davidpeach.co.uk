@@ -9,7 +9,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('posts', [PostController::class, 'index'])->name('post.index');
-Route::get('posts/{post}', [PostController::class, 'show'])->name('post.show');
+Route::get('posts/{post}', [PostController::class, 'show'])->name('post.show')->where('post', '(.*)');
 
 Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::get('/', function () {

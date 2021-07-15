@@ -44,6 +44,7 @@ class PostController extends Controller
             'title' => $request->title,
             'body_raw' => $request->body_raw,
             'status' => $request->status,
+            'slug' => makePostSlug($request->published_at, $request->title),
         ]);
 
         if ($post->status === 'draft') {

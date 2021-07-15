@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Post;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PostFactory extends Factory
@@ -21,10 +22,15 @@ class PostFactory extends Factory
      */
     public function definition()
     {
+        $title = $this->faker->sentence;
+        $date = new Carbon($this->faker->dateTime());
+
         return [
-            'title' => $this->faker->sentence,
+            'title' => $title,
             'body_raw' => $this->faker->paragraph,
             'status' => 'live',
+            'published_at' => $date,
+            'slug' => makePostSlug($date, $title),
         ];
     }
 }
