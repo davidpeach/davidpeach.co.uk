@@ -21,3 +21,11 @@ if (!function_exists('makePostSlug')) {
         ]);
     }
 }
+
+function parseDateForHtmlInput(Carbon $date)
+{
+    return vsprintf('%sT%s', [
+        $date->format('Y-m-d'),
+        $date->format('H:i')
+    ]);
+}

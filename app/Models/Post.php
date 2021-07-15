@@ -16,6 +16,7 @@ class Post extends Model
         'body_html',
         'status',
         'slug',
+        'published_at',
     ];
 
     public $dates = [

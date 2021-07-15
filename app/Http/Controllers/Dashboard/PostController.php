@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -17,10 +18,13 @@ class PostController extends Controller
 
     public function update(Post $post, Request $request)
     {
+        $publishDate = new Carbon($request->published_at);
+
         $post->update([
             'title' => $request->title,
             'body_raw' => $request->body_raw,
             'status' => $request->status,
+            'published_at' => $publishDate,
         ]);
 
         return redirect()->route('dashboard.post.index');
@@ -35,22 +39,29 @@ class PostController extends Controller
 
     public function create()
     {
-        return view('dashboard.posts.create');
+        $now = now();
+
+        return view('dashboard.posts.create', [
+            'currentDateTime' => parseDateForHtmlInput($now),
+        ]);
     }
 
     public function store(Request $request)
     {
+        $publishDate = new Carbon($request->published_at);
+
         $post = Post::create([
             'title' => $request->title,
             'body_raw' => $request->body_raw,
             'status' => $request->status,
-            'slug' => makePostSlug($request->published_at, $request->title),
+            'slug' => makePostSlug($publishDate, $request->title),
+            'published_at' => $publishDate,
         ]);
 
         if ($post->status === 'draft') {
             return redirect()->route('dashboard.post.edit', ['post' => $post]);
         }
 
-        return redirect()->route('post.show', ['post' => $post]);
+        return redirect()->route('post.show', ['post' => $post->slug]);
     }
 }

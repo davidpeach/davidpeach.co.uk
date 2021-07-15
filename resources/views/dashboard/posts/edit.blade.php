@@ -36,6 +36,14 @@
                             class="block w-full mb-5 text-xl"
                         >{{ $post->body_raw }}</textarea>
 
+                        <label for="published_at"></label>
+                        <input
+                            type="datetime-local"
+                            name="published_at"
+                            id="published_at"
+                            value="{{ parseDateForHtmlInput($post->published_at) }}"
+                        >
+
                         <label for="status" class="block">Status</label>
                         <select
                             name="status"
@@ -44,6 +52,7 @@
                         >
                             <option value="draft" {{ $post->status === 'draft' ? 'selected': '' }}>Draft</option>
                             <option value="live" {{ $post->status === 'live' ? 'selected': '' }}>Live</option>
+                            <option value="scheduled" {{ $post->status === 'scheduled' ? 'selected': '' }}>Scheduled</option>
                         </select>
 
                         <button type="submit">Update</button>

@@ -103,7 +103,7 @@ class PostsTest extends TestCase
             'slug' => '1995/12/25/my-created-post',
         ]);
 
-        $response->assertRedirect(route('post.show', 1));
+        $response->assertRedirect(route('post.show', ['post' => Post::first()->slug]));
     }
 
     /** @test */
@@ -256,6 +256,35 @@ class PostsTest extends TestCase
 
         $this->get(route('post.index'))->assertDontSee($post->title);
         $this->get(route('post.show', ['post' => $post]))->assertStatus(404);
+    }
+
+    /** @test */
+    public function i_can_change_the_published_date_for_a_post()
+    {
+        $this->login();
+
+        $post = Post::factory()->create([
+            'title' => 'Old post title',
+            'body_raw' => 'Old post content',
+            'body_html' => '<p>Old post content</p>',
+            'status' => 'live',
+            'published_at' => new Carbon('1st January 2021'),
+        ]);
+
+        $newPublishedDate = new Carbon('25th December 1995');
+
+        $this->put(route('dashboard.post.update', ['post' => $post->id]), [
+            'title' => 'Old post title',
+            'body_raw' => 'Old post content',
+            'body_html' => '<p>Old post content</p>',
+            'status' => 'live',
+            'published_at' => $newPublishedDate,
+        ]);
+
+        $this->assertEquals(
+            $newPublishedDate,
+            $post->fresh()->published_at
+        );
     }
 
     /** @test */

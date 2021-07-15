@@ -34,6 +34,14 @@
                             class="block w-full mb-5 text-xl"
                         ></textarea>
 
+                        <label for="published_at"></label>
+                        <input
+                            type="datetime-local"
+                            name="published_at"
+                            id="published_at"
+                            value="{{ $currentDateTime }}"
+                        >
+
                         <label for="status" class="block">Status</label>
                         <select
                             name="status"
@@ -42,6 +50,7 @@
                         >
                             <option value="draft">Draft</option>
                             <option value="live">Live</option>
+                            <option value="scheduled">Scheduled</option>
                         </select>
 
                         <button type="submit">Post</button>
