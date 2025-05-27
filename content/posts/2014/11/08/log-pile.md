@@ -1,0 +1,21 @@
+---
+title: Log Pile
+authors:
+  - name: David Peach
+    url: https://davidpeach.me
+    avatarUrl: >-
+      https://secure.gravatar.com/avatar/4d7faf5eee1f055a85788c44936b8995eaab6dfb004e7854ec747ccb272e91ee?s=96&d=mm&r=g
+date: 2014-11-08T21:22:00.000Z
+metadata:
+  featuredImage: https://davidpeach.me/wp-content/uploads/2023/08/log-pile.jpg
+  media:
+    featuredImage: /assets/log-pile-EpJcFVP1u3Fh.jpg
+  categories:
+    - Photos
+  uuid: 11ty/import::wordpress::https://davidpeach.co.uk/?p=48972
+  type: wordpress
+  url: https://davidpeach.me/2014/11/08/log-pile/
+tags:
+  - photos
+---
+[![](/assets/log-pile-768x603-nZl49X7anOc7.jpg)](/assets/log-pile-768x603-nZl49X7anOc7.jpg)

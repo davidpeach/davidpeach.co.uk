@@ -1,0 +1,24 @@
+---
+title: Death for Freedom
+authors:
+  - name: David Peach
+    url: https://davidpeach.me
+    avatarUrl: >-
+      https://secure.gravatar.com/avatar/4d7faf5eee1f055a85788c44936b8995eaab6dfb004e7854ec747ccb272e91ee?s=96&d=mm&r=g
+date: 2019-10-01T18:19:33.000Z
+metadata:
+  categories:
+    - The Last of Us Virtual Photography
+  tags:
+    - Games
+    - Horror
+    - PlayStation
+  uuid: 11ty/import::wordpress::https://davidpeach.co.uk/?p=36652
+  type: wordpress
+  url: https://davidpeach.me/2019/10/01/death-for-freedom/
+tags:
+  - the-last-of-us-virtual-photography
+---
+[![](/assets/Death-for-Freedom-1024x576-F9Dy6qD6Jecy.jpg)](/assets/Death-for-Freedom-1024x576-F9Dy6qD6Jecy.jpg)
+
+Death for Freedom

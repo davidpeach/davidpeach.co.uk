@@ -1,0 +1,22 @@
+---
+title: Waiting at the spire
+authors:
+  - name: David Peach
+    url: https://davidpeach.me
+    avatarUrl: >-
+      https://secure.gravatar.com/avatar/4d7faf5eee1f055a85788c44936b8995eaab6dfb004e7854ec747ccb272e91ee?s=96&d=mm&r=g
+date: 2020-10-21T23:17:09.000Z
+metadata:
+  categories:
+    - Horizon Zero Dawn Virtual Photography
+  tags:
+    - Games
+    - Horizon Zero Dawn
+    - PlayStation
+  uuid: 11ty/import::wordpress::https://davidpeach.co.uk/?p=37574
+  type: wordpress
+  url: https://davidpeach.me/2020/10/22/waiting-at-the-spire/
+tags:
+  - horizon-zero-dawn-virtual-photography
+---
+[![](/assets/Waiting-at-the-spire-1152x2048-pN3zxGm0onPv.jpg)](/assets/Waiting-at-the-spire-1152x2048-pN3zxGm0onPv.jpg)
