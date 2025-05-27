@@ -36,6 +36,8 @@ eleventyConfig.addTransform("fix-asset-paths", async function(content) {
 
       const assetPathRegex = /(href|src)="(assets\/[^"]+)"/g;
       let matchFound = false;
+             // ----> ADD THIS LINE <----
+      console.log(`[Transform] For ${this.page.outputPath}: Content snippet BEFORE replace: ${content.substring(0, 1000)}...`); // Log first 1000 characters
       const newContent = content.replace(assetPathRegex, (match, attribute, srcPath) => {
         matchFound = true;
         const newFullPath = `${productionMediaUrlPrefix}/${srcPath}`; // srcPath is "assets/image.jpg"
