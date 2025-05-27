@@ -15,31 +15,48 @@ export default function(eleventyConfig) {
 
     eleventyConfig.addPassthroughCopy("content/assets/*.{jpg,jpeg,png,gif,svg,webp,mp4,pdf}");
 
-    eleventyConfig.addTransform("fix-asset-paths", async function(content) {
+eleventyConfig.addTransform("fix-asset-paths", async function(content) {
+    // Log context for every file being transformed
+    const inputPathForLog = this.page && this.page.inputPath ? this.page.inputPath : "N/A";
+    const outputPathForLog = this.page && this.page.outputPath ? this.page.outputPath : "N/A";
+    console.log(`[Transform] Attempting to process: Input='${inputPathForLog}', Output='${outputPathForLog}'`);
+    console.log(`[Transform] Value of 'isProduction' (from outer scope): ${isProduction}`);
 
-        if (isProduction && this.page.outputPath.endsWith('.html')) {
-            const mediaUrlPrefix = process.env.MEDIA_URL_PREFIX;
+    // Check conditions for applying production logic
+    if (isProduction && outputPathForLog && outputPathForLog.endsWith('.html')) {
+      console.log(`[Transform] Applying PRODUCTION logic for: ${outputPathForLog}`);
+      
+      const productionMediaUrlPrefix = process.env.MEDIA_URL_PREFIX; // Re-check within transform scope for safety
+      console.log(`[Transform] Value of process.env.MEDIA_URL_PREFIX inside transform: ${productionMediaUrlPrefix}`);
 
-            // Don't run if the production URL isn't set
-            if (!mediaUrlPrefix) {
-                return content;
-            }
-
-            // Find all relative paths that start with "assets/"
-            const assetPathRegex = /(href|src)="(assets\/[^"]+)"/g;
-
-            return content.replace(assetPathRegex, (match, attribute, src) => {
-                // Prepend the full cloud URL to the existing path.
-                // `src` is already "assets/image.jpg"
-                const newPath = `${mediaUrlPrefix}/${src}`; 
-                return `${attribute}="${newPath}"`;
-            });
-        }
-
-        // In development, return the content without any changes
+      if (!productionMediaUrlPrefix || productionMediaUrlPrefix.trim() === '') {
+        console.warn(`[Transform] WARNING: MEDIA_URL_PREFIX is empty or not set in production for ${outputPathForLog}. No replacements will be made.`);
         return content;
-    });
+      }
 
+      const assetPathRegex = /(href|src)="(assets\/[^"]+)"/g;
+      let matchFound = false;
+      const newContent = content.replace(assetPathRegex, (match, attribute, srcPath) => {
+        matchFound = true;
+        const newFullPath = `${productionMediaUrlPrefix}/${srcPath}`; // srcPath is "assets/image.jpg"
+        console.log(`[Transform] For ${outputPathForLog}: Found "${match}". Replacing with "${attribute}="${newFullPath}"`);
+        return `${attribute}="${newFullPath}"`;
+      });
+
+      if (!matchFound) {
+        console.log(`[Transform] For ${outputPathForLog}: No paths matching 'assets/...' were found to replace.`);
+      }
+      return newContent;
+
+    } else {
+      if (!isProduction) {
+        console.log(`[Transform] Skipping production logic for ${outputPathForLog} because 'isProduction' is false.`);
+      } else if (!outputPathForLog || !outputPathForLog.endsWith('.html')) {
+        console.log(`[Transform] Skipping production logic for ${outputPathForLog} because it's not an HTML file.`);
+      }
+      return content; // Return content untouched for development or non-HTML files
+    }
+  });
     return {
         dir: {
             input: "content", // <--- Set this to "posts"
