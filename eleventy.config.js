@@ -39,7 +39,6 @@ export default function(eleventyConfig) {
             // ----> ADD THIS LINE <----
             const newContent = content.replace(assetPathRegex, (match, attribute, srcPath) => {
                 matchFound = true;
-                const newFullPath = `${productionMediaUrlPrefix}/${srcPath}`; // srcPath is "assets/image.jpg"
                 const newFullPath = new URL(srcPath, productionMediaUrlPrefix).href;
                 console.log(`[Transform] For ${outputPathForLog}: Found "${match}". Replacing with "${attribute}="${newFullPath}"`);
                 return `${attribute}="${newFullPath}"`;
