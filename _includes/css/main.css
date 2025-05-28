@@ -111,3 +111,8 @@ p, li {
     max-width: 85ch;
     padding-inline-start: 1vw;
 }
+
+.archive-roll > li:not(last-child) {
+    padding-block-end: 2rem;
+    border-block-end: 2px solid #d5d5d5;
+}

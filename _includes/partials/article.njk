@@ -1,0 +1,18 @@
+{# This partial expects a 'post' object to be passed to it #}
+<h2 class="p-name">
+  <a href="{{ post.url | url }}">{{ post.data.title }}</a>
+</h2>
+<p>
+  Published: 
+  <time class="dt-published" datetime="{{ post.date | htmlDateString }}">
+    {{ post.date | readableDate }}
+  </time>
+  by <a class="p-author h-card" href="{{ metadata.url }}">{{ metadata.author.name }}</a>
+</p>
+{% if post.data.summary %}
+  <p class="p-summary">{{ post.data.summary }}</p>
+{% endif %}
+<div class="e-content">
+  {{ post.content | safe }}
+</div>
+<a href="{{ post.url | url }}" class="u-url" rel="bookmark">Permalink</a>

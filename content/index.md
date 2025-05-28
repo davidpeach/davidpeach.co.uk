@@ -9,6 +9,13 @@ pagination:
 permalink: "/{% if pagination.pageNumber > 0 %}page/{{ pagination.pageNumber | plus: 1 }}/{% endif %}index.html"
 ---
 
+<div class="h-card p-author">
+    <img class="u-photo" src="/assets/me.jpg" alt="David Peach" width="150px" height="150px">
+    <a class="p-name u-url" href="{{ metadata.url }}">{{ metadata.author.name }}</a>
+    <p class="p-note">{{ metadata.author.bio }}</p>
+    <a class="u-email" href="mailto:{{ metadata.author.email }}">Contact Me</a>
+</div>
+
 Welcome to my new website. Currently being built "in the wild" using [11ty](https://11ty.dev).
 
 I got sick of using WordPress and not having an easy and full control over the entirety of my website. So this new site, at my original domain, is my place to 
@@ -20,21 +27,16 @@ I want to start working on my front end skills too now.
 
 ## Blog
 
-<ol role="list">
+<ol role="list" class="archive-roll">
     {%- for post in posts -%}
     <li>
-        <article>
-            <h3>
-                <a href="{{ post.url }}">
-                    {{ post.data.title | safe }}
-                </a> 
-            </h3>
-            <p>
-                <a href="{{ post.url }}">
-                    <date>{{ post.date | readableDate }}</date>
-                </a>
-            </p>
-            <div>{{ post.content | safe }}</div>
+        <article class="h-entry">
+            {%- set kind = post.data.postKind | default("note") -%}
+            {%- set post_content = post.content -%}
+            {%- set post_date = post.date -%}
+            {%- if kind == "note" -%}
+            {%-  include "partials/note.njk" -%}
+            {%- endif -%}
         </article>
     </li>
     {%- endfor -%}

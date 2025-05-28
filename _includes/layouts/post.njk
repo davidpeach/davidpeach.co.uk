@@ -12,8 +12,12 @@
             <p>David Peach</p>
         </header>
         <main>
-            <h1>{{ title | safe }}</h1>
-            {{ content | safe }}
+            {%- set kind = post.data.postKind | default("note") -%}
+            {%- set post_content = content -%}
+            {%- set post_date = date -%}
+            {%- if kind == "note" -%}
+            {%-  include "partials/note.njk" -%}
+            {%- endif -%}
         </main>
         <footer>
             <p><small>&copy; davidpeach.co.uk 2013&thinsp;&ndash;&thinsp;2025</small></p>
