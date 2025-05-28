@@ -9,9 +9,11 @@ pagination:
 permalink: "/{% if pagination.pageNumber > 0 %}page/{{ pagination.pageNumber | plus: 1 }}/{% endif %}index.html"
 ---
 
-<div class="h-card p-author">
-    <img class="u-photo" src="/assets/me.jpg" alt="David Peach" width="150px" height="150px">
-    <a class="p-name u-url" href="{{ metadata.url }}">{{ metadata.author.name }}</a>
+<div class="h-card">
+    <a class="u-url u-uid" rel="me" href="{{ metadata.url }}">
+        <img class="u-photo" src="/assets/me.jpg" alt="David Peach" width="150px" height="150px">
+    </a>
+    <p class="p-name">{{ metadata.author.name }}</p>
     <p class="p-note">{{ metadata.author.bio }}</p>
     <a class="u-email" href="mailto:{{ metadata.author.email }}">Contact Me</a>
 </div>
