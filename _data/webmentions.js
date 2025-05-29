@@ -1,45 +1,51 @@
 // _data/webmentions.js
-const EleventyFetch = require("@11ty/eleventy-fetch");
-const fs = require('fs');
-const path = require('path');
-require('dotenv').config();
+import EleventyFetch from "@11ty/eleventy-fetch";
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const CACHE_DIR = path.join(__dirname, '../.cache'); // Store cache in project root/.cache
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const CACHE_DIR = path.join(__dirname, '../.cache');
 const MENTIONS_CACHE_PATH = path.join(CACHE_DIR, 'webmentions.json');
 const DOMAIN = "davidpeach.me";
 
-// Helper function to ensure cache directory exists
 function ensureCacheDir() {
   if (!fs.existsSync(CACHE_DIR)) {
     fs.mkdirSync(CACHE_DIR, { recursive: true });
   }
 }
 
-// Helper function to read mentions from local cache
 function readFromCache() {
   ensureCacheDir();
   if (fs.existsSync(MENTIONS_CACHE_PATH)) {
     const cacheFile = fs.readFileSync(MENTIONS_CACHE_PATH);
-    return JSON.parse(cacheFile.toString());
+    try {
+      return JSON.parse(cacheFile.toString());
+    } catch (e) {
+      console.error("Error parsing webmentions cache file. Returning empty cache.", e);
+      return { lastFetched: null, mentions: [] };
+    }
   }
-  return { lastFetched: null, mentions: [] }; // Return shape consistent with API response structure
+  return { lastFetched: null, mentions: [] };
 }
 
-// Helper function to write mentions to local cache
 function writeToCache(data) {
   ensureCacheDir();
   fs.writeFileSync(MENTIONS_CACHE_PATH, JSON.stringify(data, null, 2));
   console.log(`>>> Cached ${data.mentions.length} webmentions to ${MENTIONS_CACHE_PATH}`);
 }
 
-module.exports = async function() {
+export default async function() {
   console.log(">>> Fetching webmentions...");
   const cachedData = readFromCache();
-  let allMentions = cachedData.mentions || []; // Start with cached mentions
+  let allMentions = cachedData.mentions || []; 
 
   const TOKEN = process.env.WEBMENTION_IO_TOKEN;
+
   if (!TOKEN) {
-    console.warn("⚠️ No WEBMENTION_IO_TOKEN found. Using only cached webmentions (if any).");
+    console.warn("⚠️ No WEBMENTION_IO_TOKEN found in environment variables. Using only cached webmentions (if any).");
     // Group by URL for Eleventy
     return allMentions.reduce((acc, mention) => {
         const targetUrl = mention['wm-target'];
@@ -51,10 +57,10 @@ module.exports = async function() {
 
   let fetchUrl = `https://webmention.io/api/mentions.jf2?domain=${DOMAIN}&token=${TOKEN}&per-page=1000`;
 
-  // If we have cached mentions, try to fetch only new ones
-  // Find the ID of the newest mention in the cache to use with `since_id`
   if (allMentions.length > 0) {
-    const newestMention = allMentions.reduce((a, b) => (a['wm-id'] > b['wm-id'] ? a : b));
+    // Find the ID of the newest mention in the cache to use with `since_id`
+    // Ensure there's at least one mention before trying to reduce
+    const newestMention = allMentions.reduce((a, b) => (a['wm-id'] > b['wm-id'] ? a : b), allMentions[0]);
     if (newestMention && newestMention['wm-id']) {
       fetchUrl += `&since_id=${newestMention['wm-id']}`;
       console.log(`>>> Fetching new mentions since ID: ${newestMention['wm-id']}`);
@@ -65,20 +71,19 @@ module.exports = async function() {
 
   try {
     const newMentionsResponse = await EleventyFetch(fetchUrl, {
-      duration: "0s", // We're caching locally, so always fetch fresh from API unless it's down
+      duration: "0s",
       type: "json",
-      verbose: process.env.ELEVENTY_SERVERLESS,
+      verbose: process.env.ELEVENTY_SERVERLESS === 'true' || false,
     });
 
     if (newMentionsResponse && newMentionsResponse.children) {
       console.log(`>>> ${newMentionsResponse.children.length} new webmentions fetched from webmention.io`);
       
-      // Combine and de-duplicate
       const newMentionIds = new Set(newMentionsResponse.children.map(m => m['wm-id']));
-      allMentions = allMentions.filter(m => !newMentionIds.has(m['wm-id'])); // Remove old versions of new mentions
+      allMentions = allMentions.filter(m => !newMentionIds.has(m['wm-id'])); 
       allMentions.push(...newMentionsResponse.children);
 
-      // Sort all mentions by wm-id to keep them consistent (optional, but good practice)
+      // Sort all mentions by wm-id (or received date) to keep them consistent
       allMentions.sort((a, b) => new Date(a['wm-received'] || 0) - new Date(b['wm-received'] || 0));
 
       writeToCache({
@@ -91,10 +96,8 @@ module.exports = async function() {
 
   } catch (err) {
     console.warn(`>>> ERROR fetching new webmentions: ${err.message}. Falling back to cache.`);
-    // If API fetch fails, we'll just use what's in `allMentions` (which is initially from cache)
   }
 
-  // Group by URL for Eleventy
   const mentionsByUrl = {};
   for (const mention of allMentions) {
     const targetUrl = mention['wm-target'];
