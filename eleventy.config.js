@@ -29,10 +29,20 @@ export default function(eleventyConfig) {
         }
     });
 
+
+
     // eleventyConfig.addPlugin(eleventyImageTransformPlugin);
     eleventyConfig.addPassthroughCopy("bundle.css");
     eleventyConfig.addFilter("readableDate", (dateObj) => {
         return DateTime.fromJSDate(dateObj, { zone: 'utc' }).toLocaleString(DateTime.DATE_HUGE);
+    });
+
+    // Ensure this part is present
+    eleventyConfig.addFilter("split", function(str, separator) {
+        if (typeof str !== 'string') {
+            return [];
+        }
+        return str.split(separator);
     });
 
     eleventyConfig.addPassthroughCopy("content/assets/*.{jpg,jpeg,png,gif,svg,webp,mp4,pdf}");
