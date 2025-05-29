@@ -68,7 +68,7 @@ I want to start working on my front end skills too now.
 You can also find me in these other places:
 
 <ul>
-    <li><address><a href="https://github.com/davidpeach">Github</a></address>
-    <li><address><a href="https://phpc.social/@peach">Mastodon</a></address>
+    <li><address><a rel="me" href="https://github.com/davidpeach">Github</a></address>
+    <li><address><a rel="me" href="https://phpc.social/@peach">Mastodon</a></address>
 </ul>
 
