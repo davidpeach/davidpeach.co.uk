@@ -5,10 +5,21 @@
     <p>
         Posted: 
         <a href="{{ post.url | url }}" class="u-url" rel="bookmark">
-            <time class="dt-published" datetime="{{ post_date }}">
+            <time class="dt-published" datetime="{{ post_date | dateToRfc3339 }}">
                 {{ post_date }}
             </time>
         </a>
-        by <a class="p-author h-card" href="{{ metadata.url }}">{{ metadata.author.name }}</a>
+        by <a class="u-author" href="{{ metadata.author.url }}">{{ metadata.author.name }}</a>
     </p>
+    {% if post_tags and post_tags | length > 0 %}
+    <div class="post-tags">
+        <strong>Categories:</strong>
+        {% for tag in post_tags %}
+        {# Check if the current tag is one of the hidden ones #}
+        <a href="#" class="p-category tag-item" rel="tag">{{ tag }}</a>{#
+        #}{% if not loop.last %} 
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
 </div>
