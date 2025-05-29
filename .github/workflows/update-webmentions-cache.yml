@@ -36,7 +36,7 @@ jobs:
           git config --global user.name 'GitHub Actions Bot'
           git config --global user.email 'actions-bot@github.com'
 
-          CACHE_FILE=".cache/webmentions.json"
+          CACHE_FILE="_data/webmentions_storage.json"
 
           echo "--- Pre-Commit Debug ---"
           echo "Current Branch: $(git branch --show-current)"
@@ -69,12 +69,12 @@ jobs:
           # `git diff --cached --quiet` returns 0 if no staged changes, 1 if there are.
           if ! git diff --cached --quiet -- "$CACHE_FILE"; then
             echo "Changes detected for $CACHE_FILE after staging (compared to HEAD). Attempting to commit..."
-            git commit -m "Update webmentions cache [skip ci]"
+            git commit -m "Update webmentions storage [skip ci]"
             # Optional: Add git show to log what was committed
             # echo "Showing commit:"
             # git show --stat
             git push
-            echo "Webmentions cache committed and pushed."
+            echo "Webmentions storage committed and pushed."
           else
             echo "No staged changes for $CACHE_FILE compared to HEAD, or file is identical to HEAD. No commit needed."
           fi

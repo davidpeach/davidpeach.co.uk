@@ -7,20 +7,12 @@ import { fileURLToPath } from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const CACHE_DIR = path.join(__dirname, '../.cache');
-const MENTIONS_CACHE_PATH = path.join(CACHE_DIR, 'webmentions.json');
+const MENTIONS_STORAGE_PATH = path.join(__dirname, 'webmentions_storage.json');
 const DOMAIN = "davidpeach.me";
 
-function ensureCacheDir() {
-  if (!fs.existsSync(CACHE_DIR)) {
-    fs.mkdirSync(CACHE_DIR, { recursive: true });
-  }
-}
-
 function readFromCache() {
-  ensureCacheDir();
-  if (fs.existsSync(MENTIONS_CACHE_PATH)) {
-    const cacheFile = fs.readFileSync(MENTIONS_CACHE_PATH);
+  if (fs.existsSync(MENTIONS_STORAGE_PATH)) {
+    const cacheFile = fs.readFileSync(MENTIONS_STORAGE_PATH);
     try {
       return JSON.parse(cacheFile.toString());
     } catch (e) {
@@ -32,9 +24,8 @@ function readFromCache() {
 }
 
 function writeToCache(data) {
-  ensureCacheDir();
-  fs.writeFileSync(MENTIONS_CACHE_PATH, JSON.stringify(data, null, 2));
-  console.log(`>>> Cached ${data.mentions.length} webmentions to ${MENTIONS_CACHE_PATH}`);
+  fs.writeFileSync(MENTIONS_STORAGE_PATH, JSON.stringify(data, null, 2));
+  console.log(`>>> Cached ${data.mentions.length} webmentions to ${MENTIONS_STORAGE_PATH}`);
 }
 
 export default async function() {
