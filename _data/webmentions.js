@@ -67,6 +67,35 @@ export default async function() {
       verbose: process.env.ELEVENTY_SERVERLESS === 'true' || false,
     });
 
+        // --- START DEBUGGING EMOJIS ---
+    if (newMentionsResponse && newMentionsResponse.children && newMentionsResponse.children.length > 0) {
+      console.log("------------------------------------------------------------");
+      console.log("DEBUGGING EMOJI IN FETCHED DATA (first 3 mentions if available):");
+      for (let i = 0; i < Math.min(3, newMentionsResponse.children.length); i++) {
+        const mention = newMentionsResponse.children[i];
+        console.log(`\n--- Mention ${i + 1} ---`);
+        console.log(`Raw mention object (author & content snippet):`, { 
+          author_name: mention.author ? mention.author.name : 'N/A', 
+          content_text: mention.content ? mention.content.text : 'N/A',
+          // You might want to log the whole mention object if it's small enough
+          // or if you need to inspect other fields for the problematic mention
+          // For example: full_mention_object: mention 
+        });
+        // Specifically log the fields you expect emojis in
+        if (mention.author && mention.author.name) {
+            console.log(`Mention ${i + 1} raw author.name:`, mention.author.name);
+        }
+        if (mention.content && mention.content.text) {
+          console.log(`Mention ${i + 1} raw content.text:`, mention.content.text);
+        }
+      }
+      console.log("------------------------------------------------------------");
+    } else if (newMentionsResponse) {
+      console.log("DEBUGGING EMOJI: newMentionsResponse received, but no children or empty children array:", newMentionsResponse);
+    } else {
+      console.log("DEBUGGING EMOJI: newMentionsResponse is null or undefined after fetch.");
+    }
+
     if (newMentionsResponse && newMentionsResponse.children) {
       console.log(`>>> ${newMentionsResponse.children.length} new webmentions fetched from webmention.io`);
       
