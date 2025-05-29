@@ -36,6 +36,15 @@ jobs:
           git config --global user.name 'GitHub Actions Bot'
           git config --global user.email 'actions-bot@github.com'
 
+          echo "--- Initial File Status in Repository (HEAD) ---"
+          echo "Looking for .cache/webmentions.json in current commit (HEAD):"
+          # This command lists all files in the current commit. We grep for our specific file.
+          # If not found, it will echo the "NOT FOUND" message.
+          git ls-tree -r HEAD --name-only | grep '.cache/webmentions.json$' || echo ".cache/webmentions.json NOT FOUND in HEAD"
+          echo "Full file listing in HEAD (first 20 lines for brevity if many files):"
+          git ls-tree -r HEAD --name-only | head -n 20
+          echo "-------------------------------------------------"
+
           echo "--- Debugging Git Status ---"
           echo "Current Branch:"
           git branch --show-current
