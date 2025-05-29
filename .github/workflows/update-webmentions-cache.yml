@@ -36,60 +36,45 @@ jobs:
           git config --global user.name 'GitHub Actions Bot'
           git config --global user.email 'actions-bot@github.com'
 
-          echo "--- Initial File Status in Repository (HEAD) ---"
-          echo "Looking for .cache/webmentions.json in current commit (HEAD):"
-          # This command lists all files in the current commit. We grep for our specific file.
-          # If not found, it will echo the "NOT FOUND" message.
-          git ls-tree -r HEAD --name-only | grep '.cache/webmentions.json$' || echo ".cache/webmentions.json NOT FOUND in HEAD"
-          echo "Full file listing in HEAD (first 20 lines for brevity if many files):"
-          git ls-tree -r HEAD --name-only | head -n 20
-          echo "-------------------------------------------------"
+          CACHE_FILE=".cache/webmentions.json"
 
-          echo "--- Debugging Git Status ---"
-          echo "Current Branch:"
-          git branch --show-current
+          echo "--- Pre-Commit Debug ---"
+          echo "Current Branch: $(git branch --show-current)"
+          echo "Looking for $CACHE_FILE in current commit (HEAD) using ls-tree:"
+          git ls-tree -r HEAD --name-only | grep "${CACHE_FILE}$" || echo "$CACHE_FILE NOT FOUND in HEAD via ls-tree"
           
-          CACHE_FILE=".cache/webmentions.json" # Define for easier use
-
-          echo "Checking for file: $CACHE_FILE"
+          echo "Checking if $CACHE_FILE exists in working directory before add:"
           if [ -f "$CACHE_FILE" ]; then
-            echo "$CACHE_FILE exists. Displaying its first 10 lines:"
-            head -n 10 "$CACHE_FILE" # See the start of the file, including lastFetched
-            
-            echo "----"
-            echo "Git Status (porcelain - M=modified, A=added, ??=untracked):"
-            git status --porcelain "$CACHE_FILE" # Shows status of just this file
-
-            echo "----"
-            echo "Running 'git diff --stat $CACHE_FILE' (should show if different from HEAD):"
-            git diff --stat "$CACHE_FILE" 
-            
-            echo "----"
-            echo "Running 'git diff --quiet $CACHE_FILE'; exit code will be on next line."
-            git diff --quiet "$CACHE_FILE"
-            DIFF_QUIET_EXIT_CODE=$?
-            echo "Exit code of 'git diff --quiet $CACHE_FILE': $DIFF_QUIET_EXIT_CODE"
-
-            if [ $DIFF_QUIET_EXIT_CODE -ne 0 ]; then
-              echo "Changes detected by 'git diff --quiet $CACHE_FILE'."
-            else
-              echo "No changes detected by 'git diff --quiet $CACHE_FILE'."
-              echo "Showing full 'git diff $CACHE_FILE' to see why (if it's short):"
-              git diff "$CACHE_FILE"
-            fi
+            echo "$CACHE_FILE exists in working directory. First 10 lines:"
+            head -n 10 "$CACHE_FILE"
           else
-            echo "$CACHE_FILE does NOT exist at commit stage."
+            echo "$CACHE_FILE does NOT exist in working directory before add. Build script may not have created it."
+            # Exit here if the file isn't even created by the build script
+            # This would prevent the 'else' of the main commit logic from being misleading
+            echo "Final decision: $CACHE_FILE not found, no commit."
+            exit 0 
           fi
-          echo "--- End Debugging Git Status ---"
 
-          # Original logic (you might want to temporarily use the exit code from debug for the if condition)
-          # For example: if [ -f "$CACHE_FILE" ] && [ $DIFF_QUIET_EXIT_CODE -ne 0 ]; then
-          if [ -f "$CACHE_FILE" ] && ! git diff --quiet "$CACHE_FILE"; then
-            echo "Attempting to 'git add $CACHE_FILE' and commit..."
-            git add "$CACHE_FILE" 
+          echo "Git status for $CACHE_FILE before add:"
+          git status --porcelain "$CACHE_FILE"
+
+          echo "Attempting to 'git add $CACHE_FILE'"
+          git add "$CACHE_FILE"
+
+          echo "Git status for $CACHE_FILE after add:"
+          git status --porcelain "$CACHE_FILE"
+          echo "--- End Pre-Commit Debug ---"
+
+          # Check if there are STAGED changes for this file compared to HEAD
+          # `git diff --cached --quiet` returns 0 if no staged changes, 1 if there are.
+          if ! git diff --cached --quiet -- "$CACHE_FILE"; then
+            echo "Changes detected for $CACHE_FILE after staging (compared to HEAD). Attempting to commit..."
             git commit -m "Update webmentions cache [skip ci]"
+            # Optional: Add git show to log what was committed
+            # echo "Showing commit:"
+            # git show --stat
             git push
             echo "Webmentions cache committed and pushed."
           else
-            echo "Final decision: No changes to webmentions cache or file not found (based on original logic)."
+            echo "No staged changes for $CACHE_FILE compared to HEAD, or file is identical to HEAD. No commit needed."
           fi
