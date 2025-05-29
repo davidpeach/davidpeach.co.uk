@@ -2,3 +2,4 @@ node_modules
 _site
 content/assets
 .cache
+!.cache/webmentions.json
