@@ -1,0 +1,45 @@
+name: Update Webmentions Cache
+
+on:
+  schedule:
+    # Runs every day at 3:15 AM UTC (adjust as needed)
+    - cron: '15 3 * * *'
+  workflow_dispatch: # Allows manual triggering from GitHub Actions tab
+
+jobs:
+  build_and_cache:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }} # Or use default GITHUB_TOKEN with correct permissions
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Eleventy Site & Update Cache
+        env:
+          WEBMENTION_IO_TOKEN: ${{ secrets.WEBMENTION_IO_TOKEN_SECRET }}
+          NODE_ENV: production
+        run: npm run build
+
+      - name: Commit and Push Cache
+        run: |
+          git config --global user.name 'GitHub Actions Bot'
+          git config --global user.email 'actions-bot@github.com'
+          # Check if the cache file exists and has changes
+          if [ -f .cache/webmentions.json ] && ! git diff --quiet .cache/webmentions.json; then
+            git add .cache/webmentions.json
+            git commit -m "Update webmentions cache [skip ci]"
+            git push
+            echo "Webmentions cache committed and pushed."
+          else
+            echo "No changes to webmentions cache or file not found."
+          fi
