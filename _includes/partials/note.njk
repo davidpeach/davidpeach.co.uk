@@ -23,3 +23,19 @@
     </div>
     {% endif %}
 </div>
+{%- if syndication -%}
+  <div class="syndication-links">
+    <h4>Also on:</h4>
+    <ul>
+      {%- if syndication is string -%}
+        {# Handle case where syndication is a single string #}
+        <li><a href="{{ syndication | url }}" rel="syndication" class="u-syndication">{{ syndication }}</a></li>
+      {%- else -%}
+        {# Handle case where syndication is an array #}
+        {%- for url_item in syndication -%}
+          <li><a href="{{ url_item | url }}" rel="syndication" class="u-syndication">{{ url_item }}</a></li>
+        {%- endfor -%}
+      {%- endif -%}
+    </ul>
+  </div>
+{%- endif -%}
