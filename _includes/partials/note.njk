@@ -9,7 +9,7 @@
                 {{ post_date }}
             </time>
         </a>
-        by <a class="u-author" href="{{ metadata.author.url }}">{{ metadata.author.name }}</a>
+        by <a class="p-author h-card" href="{{ metadata.author.url }}">{{ metadata.author.name }}</a>
     </p>
     {% if post_tags and post_tags | length > 0 %}
     <div class="post-tags">
