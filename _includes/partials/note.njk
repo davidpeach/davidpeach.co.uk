@@ -6,7 +6,7 @@
         Posted: 
         <a href="{{ post.url | url }}" class="u-url" rel="bookmark">
             <time class="dt-published" datetime="{{ post_date | dateToRfc3339 }}">
-                {{ post_date }}
+                {{ post_date | readableDate }}
             </time>
         </a>
         by <a class="p-author h-card" href="{{ metadata.author.url }}">{{ metadata.author.name }}</a>
