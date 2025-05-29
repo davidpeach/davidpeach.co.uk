@@ -22,28 +22,8 @@
         {% endfor %}
     </div>
     {% endif %}
-</div>
-{%- if syndication -%}
-  <div class="syndication-links">
-    <h4>Also on:</h4>
-    <ul>
-      {%- if syndication is string -%}
-        {# Handle case where syndication is a single string #}
-        <li><a href="{{ syndication | url }}" rel="syndication" class="u-syndication">{{ syndication }}</a></li>
-      {%- else -%}
-        {# Handle case where syndication is an array #}
-        {%- for url_item in syndication -%}
-          <li><a href="{{ url_item | url }}" rel="syndication" class="u-syndication">{{ url_item }}</a></li>
-        {%- endfor -%}
-      {%- endif -%}
-    </ul>
-    {% comment %}
-  Construct the canonical URL for the current page.
-  This assumes you have a global data variable like `site.url` (e.g., from _data/site.js)
-  that stores your website's base URL (e.g., "https://davidpeach.me").
-  The 'url' filter makes page.url an absolute path if it isn't already.
-{% endcomment %}
-{%- set currentPostUrl = site.url + (page.url | url) -%}
+
+{%- set currentPostUrl = metadata.author.url + (page.url | url) -%}
 {%- set mentionsForPage = webmentions[currentPostUrl] -%}
 
 {%- if mentionsForPage and mentionsForPage.length > 0 -%}
@@ -99,5 +79,22 @@
     </ul>
   </div>
 {%- endif -%}
+
+
+</div>
+{%- if syndication -%}
+  <div class="syndication-links">
+    <h4>Also on:</h4>
+    <ul>
+      {%- if syndication is string -%}
+        {# Handle case where syndication is a single string #}
+        <li><a href="{{ syndication | url }}" rel="syndication" class="u-syndication">{{ syndication }}</a></li>
+      {%- else -%}
+        {# Handle case where syndication is an array #}
+        {%- for url_item in syndication -%}
+          <li><a href="{{ url_item | url }}" rel="syndication" class="u-syndication">{{ url_item }}</a></li>
+        {%- endfor -%}
+      {%- endif -%}
+    </ul>
   </div>
 {%- endif -%}
