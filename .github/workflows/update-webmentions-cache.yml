@@ -27,6 +27,7 @@ jobs:
       - name: Build Eleventy Site & Update Cache
         env:
           WEBMENTION_IO_TOKEN: ${{ secrets.WEBMENTION_IO_TOKEN_SECRET }}
+          MEDIA_URL_PREFIX: https://media.davidpeach.me
           NODE_ENV: production
         run: npm run build
 
