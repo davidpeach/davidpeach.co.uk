@@ -18,6 +18,8 @@
             {%- set post_tags = metadata.tags -%}
             {%- if kind == "note" -%}
             {%-  include "partials/note.njk" -%}
+            {%- elif kind == "article" -%}
+            {%-  include "partials/article.njk" -%}
             {%- endif -%}
         </main>
         <footer>

@@ -38,6 +38,8 @@ I want to start working on my front end skills too now.
             {%- set post_date = post.date -%}
             {%- if kind == "note" -%}
             {%-  include "partials/note.njk" -%}
+            {%- elif kind == "article" -%}
+            {%-  include "partials/article.njk" -%}
             {%- endif -%}
         </article>
     </li>
